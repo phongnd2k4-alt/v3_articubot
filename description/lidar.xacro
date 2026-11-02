@@ -1,0 +1,110 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- ==================== LIDAR JOINT ==================== -->
+  <!-- Gan LiDAR tren san tang 2 -->
+  <joint name="lidar_joint" type="fixed">
+    <parent link="upper_deck"/>
+    <child link="laser_frame"/>
+    <!--
+      San tren day 0.205 m so voi base_link.
+      Tam LiDAR cao 0.0325 m so voi upper_deck,
+      de day LiDAR nam sat mat tren san.
+    -->
+    <origin xyz="0 0 0.0325" rpy="0 0 0"/>
+  </joint>
+
+  <!-- ==================== LIDAR LINK ==================== -->
+  <link name="laser_frame">
+
+    <!-- Hinh dang LiDAR -->
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.05" length="0.04"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+
+    <!-- Vung va cham -->
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.05" length="0.04"/>
+      </geometry>
+    </collision>
+
+    <!-- Khoi luong va mo-men quan tinh -->
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.1"/>
+      <inertia
+        ixx="0.0000708"
+        ixy="0.0"
+        ixz="0.0"
+        iyy="0.0000708"
+        iyz="0.0"
+        izz="0.000125"/>
+    </inertial>
+
+  </link>
+
+  <!-- ==================== GAZEBO LIDAR SENSOR ==================== -->
+  <gazebo reference="laser_frame">
+
+    <material>Gazebo/Black</material>
+
+    <sensor name="laser" type="ray">
+
+      <!-- Vi tri cam bien so voi laser_frame -->
+      <pose>0 0 0 0 0 0</pose>
+
+      <!-- Hien thi tia quet trong Gazebo -->
+      <visualize>false</visualize>
+
+      <!-- Tan so quet: 10 Hz -->
+      <update_rate>10</update_rate>
+
+      <ray>
+        <scan>
+          <horizontal>
+            <!-- So mau quet -->
+            <samples>360</samples>
+
+            <!-- Goc quet tu -180 den +180 do -->
+            <min_angle>-3.14159265</min_angle>
+            <max_angle>3.14159265</max_angle>
+          </horizontal>
+        </scan>
+
+        <range>
+          <!-- Khoang cach do toi thieu -->
+          <min>0.3</min>
+
+          <!-- Khoang cach do toi da -->
+          <max>12.0</max>
+
+          <!-- Do phan giai khoang cach -->
+          <resolution>0.01</resolution>
+        </range>
+      </ray>
+
+      <!-- Plugin ket noi cam bien Gazebo voi ROS 2 -->
+      <plugin name="laser_controller"
+              filename="libgazebo_ros_ray_sensor.so">
+
+        <ros>
+          <argument>~/out:=scan</argument>
+        </ros>
+
+        <output_type>sensor_msgs/LaserScan</output_type>
+
+        <frame_name>laser_frame</frame_name>
+
+      </plugin>
+
+    </sensor>
+
+  </gazebo>
+
+</robot>

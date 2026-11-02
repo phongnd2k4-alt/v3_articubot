@@ -1,0 +1,62 @@
+controller_manager:
+  ros__parameters:
+
+    update_rate: 30
+    use_sim_time: true
+
+    # Doc va publish trang thai cac joint
+    joint_broad:
+      type: joint_state_broadcaster/JointStateBroadcaster
+
+    # Dieu khien AGV theo kieu differential drive
+    diff_cont:
+      type: diff_drive_controller/DiffDriveController
+
+
+# ================================================
+# DIFF DRIVE CONTROLLER
+# ================================================
+
+diff_cont:
+  ros__parameters:
+
+    publish_rate: 50.0
+
+    base_frame_id: base_link
+    odom_frame_id: odom
+
+    enable_odom_tf: true
+
+    # --------------------------------------------
+    # HAI BANH BEN TRAI
+    # --------------------------------------------
+
+    left_wheel_names:
+      - lf_wheel_joint
+      - lr_wheel_joint
+
+
+    # --------------------------------------------
+    # HAI BANH BEN PHAI
+    # --------------------------------------------
+
+    right_wheel_names:
+      - rf_wheel_joint
+      - rr_wheel_joint
+
+
+    # --------------------------------------------
+    # THONG SO CO KHI
+    # --------------------------------------------
+
+    # Khoang cach tam ben trai den tam ben phai
+    wheel_separation: 0.38
+
+    # Ban kinh banh
+    wheel_radius: 0.065
+
+    # Moi ben xe co 2 banh
+    wheels_per_side: 2
+
+    # Nhan lenh Twist tu /cmd_vel
+    use_stamped_vel: false
